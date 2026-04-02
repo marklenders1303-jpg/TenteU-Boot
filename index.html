@@ -163,6 +163,7 @@
     <div id="bottom-controls" style="display: none;">
         <button id="pause-btn" class="bottom-btn" onclick="togglePause()">⏸️ Pausa</button>
         <button id="mute-btn" class="bottom-btn" onclick="toggleMute()">🔇 Sonido OFF</button>
+        <button id="quit-btn" class="bottom-btn" onclick="quitToMainMenu()">🚪 Abandonar</button>
     </div>
     
     <canvas id="radar-canvas" width="200" height="112" style="display: none;"></canvas>
@@ -204,6 +205,26 @@
         const overlay = document.getElementById('pause-overlay');
         btn.textContent = gameState.isPaused ? '▶️ Reanudar' : '⏸️ Pausa';
         overlay.style.display = gameState.isPaused ? 'block' : 'none';
+    }
+
+    function quitToMainMenu() {
+        // Detenemos el bucle del juego
+        gameState.isRunning = false;
+        cancelAnimationFrame(animationId);
+        
+        // Reseteamos el estado de pausa por si el jugador abandona estando en pausa
+        gameState.isPaused = false;
+        document.getElementById('pause-btn').textContent = '⏸️ Pausa';
+        document.getElementById('pause-overlay').style.display = 'none';
+
+        // Ocultamos la interfaz de la partida
+        document.getElementById('ui-layer').style.display = 'none';
+        document.getElementById('bottom-controls').style.display = 'none';
+        document.getElementById('radar-canvas').style.display = 'none';
+        document.getElementById('game-over-screen').style.display = 'none';
+        
+        // Volvemos a mostrar el menú de inicio
+        document.getElementById('start-screen').style.display = 'flex';
     }
 
     function startGame() {
