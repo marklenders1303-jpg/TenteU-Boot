@@ -73,6 +73,9 @@
         @keyframes pulse-warning { 0% { opacity: 0.4; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
         @keyframes blink-warning { 0% { opacity: 0.2; } 100% { opacity: 1; } }
 
+        /* CARTEL DE ANUNCIO DE NIVEL */
+        #level-announcer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: #00ffcc; text-shadow: 0px 0px 40px rgba(0, 255, 204, 0.8); letter-spacing: 15px; pointer-events: none; z-index: 150; opacity: 0; display: none; transition: opacity 1s ease-in-out; }
+
         #pause-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: rgba(180, 180, 180, 0.7); letter-spacing: 25px; pointer-events: none; z-index: 100; display: none; text-shadow: 0px 0px 20px rgba(0,0,0,0.8); }
         #autopilot-notification { position: absolute; top: 25%; left: 50%; transform: translateX(-50%); font-size: 40px; font-weight: 900; color: #00ff00; text-align: center; text-shadow: 0px 0px 20px rgba(0, 255, 0, 0.8); letter-spacing: 5px; pointer-events: none; z-index: 90; display: none; }
         #objective-warning { position: absolute; top: 25%; left: 50%; transform: translateX(-50%); font-size: 35px; font-weight: 900; color: #ff4d4d; text-align: center; text-shadow: 0px 0px 20px rgba(255, 0, 0, 0.8); letter-spacing: 5px; pointer-events: none; z-index: 90; display: none; }
@@ -86,8 +89,14 @@
         button:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 10px 30px rgba(0, 255, 204, 0.6); }
         button:active { transform: scale(0.98); }
         
-        #restart-btn { background: linear-gradient(to bottom, #ff9966, #ff5e62); color: white; box-shadow: 0 6px 25px rgba(255, 94, 98, 0.6); }
-        #restart-btn:hover { box-shadow: 0 10px 30px rgba(255, 94, 98, 0.8); }
+        #retry-btn { background: linear-gradient(to bottom, #ffcc00, #ff9900); color: #000; box-shadow: 0 6px 25px rgba(255, 204, 0, 0.4); }
+        #retry-btn:hover { box-shadow: 0 10px 30px rgba(255, 204, 0, 0.6); }
+        
+        #menu-btn { background: linear-gradient(to bottom, #777, #444); color: white; box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6); }
+        #menu-btn:hover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
+
+        #restart-full-btn { background: linear-gradient(to bottom, #ff9966, #ff5e62); color: white; box-shadow: 0 6px 25px rgba(255, 94, 98, 0.6); }
+        #restart-full-btn:hover { box-shadow: 0 10px 30px rgba(255, 94, 98, 0.8); }
 
         #bottom-controls { position: absolute; bottom: 25px; right: 40px; z-index: 50; display: flex; gap: 15px; pointer-events: none; }
         .bottom-btn { padding: 12px 24px; font-size: 18px; background: linear-gradient(to bottom, #444, #222); border: 2px solid #777; box-shadow: 0 4px 10px rgba(0,0,0,0.8); pointer-events: auto; cursor: pointer; color: white; border-radius: 8px; transition: all 0.2s ease; letter-spacing: normal; text-transform: none; }
@@ -115,6 +124,7 @@
             <div class="sub-options">
                 <div class="sub-option selected" id="sub-uboot" onclick="selectSubmarine('Uboot.png', 'sub-uboot')">U-Boot</div>
                 <div class="sub-option" id="sub-k19" onclick="selectSubmarine('k-19.png', 'sub-k19')">K-19</div>
+                <div class="sub-option" id="sub-s80" onclick="selectSubmarine('S-80.png', 'sub-s80')">S-80</div>
             </div>
         </div>
 
@@ -151,6 +161,8 @@
         </div>
     </div>
     
+    <div id="level-announcer">NIVEL 1</div>
+
     <div id="warnings-column">
         <img id="pressure-warning" class="warning-icon" src="peligro_presion.svg" alt="Peligro Presión Alta">
         <img id="oxygen-warning" class="warning-icon" src="oxigeno_bajo.svg" alt="Alerta Oxígeno Bajo">
@@ -172,7 +184,9 @@
         <h1 id="end-title">¡FIN DEL JUEGO!</h1>
         <p>Tu puntuación final: <span id="final-score">0</span></p>
         <div id="game-over-buttons">
-            <button id="restart-btn" onclick="resetGame()">Volver a Jugar</button>
+            <button id="retry-btn" onclick="retryLevel()" style="display: none;">Reintentar Nivel</button>
+            <button id="menu-btn" onclick="quitToMainMenu()" style="display: none;">Menú Principal</button>
+            <button id="restart-full-btn" onclick="resetGame()" style="display: none;">Volver a Jugar</button>
         </div>
     </div>
 </div>
@@ -182,6 +196,14 @@
 <script>
     let selectedSubmarineImage = 'Uboot.png';
 
+    // Variables para guardar el estado al inicio de cada nivel
+    let savedScore = 0;
+    let savedTorpedoes = 10;
+    
+    // Variables para el Sonar
+    let lastSonarTime = 0;
+    const SONAR_INTERVAL = 3000;
+
     function selectSubmarine(img, elementId) {
         selectedSubmarineImage = img;
         document.querySelectorAll('.sub-option').forEach(el => el.classList.remove('selected'));
@@ -190,12 +212,19 @@
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
+    // --- NUEVO: Configuración del audio externo del sonar ---
+    const sonarAudio = new Audio('sonar.mp3');
+    sonarAudio.volume = 0.06; // Volumen al 6% para que actúe de fondo sutil
+
     let isMuted = true;
+    
+    // Actualizada para sincronizar el estado del mute con el archivo mp3
     function toggleMute() {
         isMuted = !isMuted;
         const btn = document.getElementById('mute-btn');
         btn.textContent = isMuted ? '🔇 Sonido OFF' : '🔊 Sonido ON';
         if (!isMuted && audioCtx.state === 'suspended') audioCtx.resume();
+        sonarAudio.muted = isMuted; // Sincroniza el sonido externo con el botón
     }
 
     function togglePause() {
@@ -208,22 +237,18 @@
     }
 
     function quitToMainMenu() {
-        // Detenemos el bucle del juego
         gameState.isRunning = false;
         cancelAnimationFrame(animationId);
         
-        // Reseteamos el estado de pausa por si el jugador abandona estando en pausa
         gameState.isPaused = false;
         document.getElementById('pause-btn').textContent = '⏸️ Pausa';
         document.getElementById('pause-overlay').style.display = 'none';
 
-        // Ocultamos la interfaz de la partida
         document.getElementById('ui-layer').style.display = 'none';
         document.getElementById('bottom-controls').style.display = 'none';
         document.getElementById('radar-canvas').style.display = 'none';
         document.getElementById('game-over-screen').style.display = 'none';
         
-        // Volvemos a mostrar el menú de inicio
         document.getElementById('start-screen').style.display = 'flex';
     }
 
@@ -234,24 +259,35 @@
         document.getElementById('radar-canvas').style.display = 'block';
         
         if (audioCtx.state === 'suspended' && !isMuted) audioCtx.resume();
-        startLevel(1, false);
+        
+        savedScore = 0;
+        savedTorpedoes = 10;
+        startLevel(1);
     }
 
     // --- SISTEMA DE DIFICULTAD Y NIVELES ---
     const levelConfigs = [
-        { kills: 5, length: 10000, cargo: 4, meta: 2, dest: 2, frig: 0, miss: 0, drone: 4, mines: 15, fuels: 6, oxygens: 5, ammos: 10, fish: 20 },
-        { kills: 6, length: 11000, cargo: 4, meta: 3, dest: 3, frig: 1, miss: 0, drone: 6, mines: 20, fuels: 6, oxygens: 4, ammos: 9, fish: 20 },
-        { kills: 8, length: 12000, cargo: 5, meta: 4, dest: 4, frig: 3, miss: 1, drone: 9, mines: 30, fuels: 5, oxygens: 3, ammos: 7, fish: 15 }, 
-        { kills: 10, length: 13000, cargo: 6, meta: 4, dest: 5, frig: 4, miss: 1, drone: 12, mines: 40, fuels: 4, oxygens: 3, ammos: 7, fish: 15 },
-        { kills: 12, length: 14000, cargo: 6, meta: 5, dest: 6, frig: 5, miss: 2, drone: 15, mines: 50, fuels: 4, oxygens: 3, ammos: 6, fish: 15 },
-        { kills: 15, length: 15000, cargo: 7, meta: 5, dest: 7, frig: 6, miss: 2, drone: 18, mines: 60, fuels: 4, oxygens: 2, ammos: 6, fish: 10 },
-        { kills: 18, length: 16000, cargo: 7, meta: 6, dest: 8, frig: 7, miss: 3, drone: 21, mines: 70, fuels: 3, oxygens: 2, ammos: 5, fish: 10 },
-        { kills: 21, length: 17000, cargo: 8, meta: 6, dest: 9, frig: 8, miss: 3, drone: 24, mines: 85, fuels: 3, oxygens: 2, ammos: 5, fish: 10 },
-        { kills: 25, length: 18000, cargo: 8, meta: 7, dest: 10, frig: 9, miss: 4, drone: 27, mines: 100, fuels: 2, oxygens: 2, ammos: 4, fish: 5 }, 
-        { kills: 28, length: 20000, cargo: 9, meta: 7, dest: 11, frig: 10, miss: 5, drone: 31, mines: 130, fuels: 2, oxygens: 1, ammos: 4, fish: 5 } 
+        { kills: 5, length: 10000, cargo: 4, meta: 2, dest: 2, frig: 0, miss: 0, drone: 2, mines: 15, fuels: 6, oxygens: 5, ammos: 10, fish: 20 },
+        { kills: 6, length: 11000, cargo: 4, meta: 3, dest: 3, frig: 1, miss: 0, drone: 3, mines: 20, fuels: 6, oxygens: 4, ammos: 9, fish: 20 },
+        { kills: 8, length: 12000, cargo: 5, meta: 4, dest: 4, frig: 3, miss: 1, drone: 4, mines: 30, fuels: 5, oxygens: 3, ammos: 7, fish: 15 }, 
+        { kills: 10, length: 13000, cargo: 6, meta: 4, dest: 5, frig: 4, miss: 1, drone: 5, mines: 40, fuels: 4, oxygens: 3, ammos: 7, fish: 15 },
+        { kills: 12, length: 14000, cargo: 6, meta: 5, dest: 6, frig: 5, miss: 2, drone: 6, mines: 50, fuels: 4, oxygens: 3, ammos: 6, fish: 15 },
+        { kills: 15, length: 15000, cargo: 7, meta: 5, dest: 7, frig: 6, miss: 2, drone: 7, mines: 60, fuels: 4, oxygens: 2, ammos: 6, fish: 10 },
+        { kills: 18, length: 16000, cargo: 7, meta: 6, dest: 8, frig: 7, miss: 3, drone: 8, mines: 70, fuels: 3, oxygens: 2, ammos: 5, fish: 10 },
+        { kills: 21, length: 17000, cargo: 8, meta: 6, dest: 9, frig: 8, miss: 3, drone: 9, mines: 85, fuels: 3, oxygens: 2, ammos: 5, fish: 10 },
+        { kills: 25, length: 18000, cargo: 8, meta: 7, dest: 10, frig: 9, miss: 4, drone: 10, mines: 100, fuels: 2, oxygens: 2, ammos: 4, fish: 5 }, 
+        { kills: 28, length: 20000, cargo: 9, meta: 7, dest: 11, frig: 10, miss: 5, drone: 11, mines: 130, fuels: 2, oxygens: 1, ammos: 4, fish: 5 } 
     ];
 
-    // Funciones de audio
+    // --- NUEVO: Función actualizada para disparar el archivo sonar.mp3 ---
+    function playSonarPing() {
+        if (isMuted) return;
+        sonarAudio.currentTime = 0; // Reinicia el audio por si aún está sonando
+        sonarAudio.play().catch(error => {
+            // Ignoramos silenciosamente si el navegador bloquea la reproducción automática
+        });
+    }
+
     function playExplosionSound() {
         if (isMuted) return;
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -402,7 +438,6 @@
         osc1.stop(audioCtx.currentTime + 0.8); osc2.stop(audioCtx.currentTime + 0.8);
     }
 
-    // Helper para verificar línea de visión libre de rocas con margen dinámico
     function checkLineOfSight(x1, y1, x2, y2, margin = 10) {
         let l2 = (x2 - x1)**2 + (y2 - y1)**2;
         if (l2 === 0) return true;
@@ -1526,7 +1561,7 @@
             this.vx = 0; this.vy = 0;
             this.acceleration = 0.04; 
             this.friction = 0.94;
-            this.maxSpeed = 1.6; // Ligeramente incrementada para que el dron no se quede rezagado
+            this.maxSpeed = 1.6; 
             this.active = true;
             this.state = 'normal';
             this.hp = 1;
@@ -1534,7 +1569,6 @@
             this.activeTorpedo = null;
             this.ammo = 2; 
             
-            // Memoria de preferencia direccional para sortear obstáculos sin oscilar
             this.evasionPref = null;
             
             this.patrolStartX = startX - 600;
@@ -1578,27 +1612,23 @@
                     }
                     
                     if (this.detectedPlayer) {
-                        // Usar margen para evaluar si la ruta directa está REALMENTE libre
                         let hasLoS = checkLineOfSight(this.x, this.y, player2D.x, player2D.y, 20);
 
                         if (!hasLoS) {
-                            // NUEVO SISTEMA: Búsqueda de camino con "bigotes" (Whisker Raycasting)
                             let angleToPlayer = Math.atan2(player2D.y - this.y, player2D.x - this.x);
                             let bestAngle = angleToPlayer;
                             let pathFound = false;
 
-                            // Memorizar la preferencia para no quedarse atascado dudando entre arriba y abajo
                             if (!this.evasionPref) this.evasionPref = Math.random() > 0.5 ? 1 : -1;
 
                             let steps = 16;
                             let angleStep = Math.PI * 2 / steps;
                             
-                            // Emitir rayos en abanico abriéndose desde el ángulo directo hacia el jugador
                             for (let i = 1; i <= steps / 2; i++) {
                                 let angle1 = angleToPlayer + i * angleStep * this.evasionPref;
                                 let angle2 = angleToPlayer - i * angleStep * this.evasionPref;
                                 
-                                let checkDist = 250; // Hasta dónde "mira" el dron
+                                let checkDist = 250; 
 
                                 let p1X = this.x + Math.cos(angle1) * checkDist;
                                 let p1Y = this.y + Math.sin(angle1) * checkDist;
@@ -1613,24 +1643,20 @@
                                 if (checkLineOfSight(this.x, this.y, p2X, p2Y, 50)) {
                                     bestAngle = angle2;
                                     pathFound = true;
-                                    // Invertir preferencia para que fluya hacia el otro lado la próxima vez si este se cierra
                                     this.evasionPref *= -1; 
                                     break;
                                 }
                             }
 
                             if (pathFound) {
-                                // Acelerar decididamente en la dirección libre encontrada
                                 this.vx += Math.cos(bestAngle) * this.acceleration * 1.5;
                                 this.vy += Math.sin(bestAngle) * this.acceleration * 1.5;
                             } else {
-                                // Si está totalmente rodeado (muy poco común), moverse hacia el centro abierto
                                 let centerAngle = Math.atan2((SURFACE_LEVEL + SEABED_LEVEL)/2 - this.y, (this.x + 100) - this.x);
                                 this.vx += Math.cos(centerAngle) * this.acceleration;
                                 this.vy += Math.sin(centerAngle) * this.acceleration;
                             }
                         } else {
-                            // Línea de tiro limpia, resetear memoria de evasión
                             this.evasionPref = null;
 
                             if (this.ammo > 0) {
@@ -1662,7 +1688,6 @@
                                     }
                                 }
                             } else {
-                                // Kamikaze
                                 if (this.x < player2D.x) this.vx += this.acceleration * 1.5;
                                 else this.vx -= this.acceleration * 1.5;
                                 
@@ -1671,7 +1696,6 @@
                             }
                         }
                     } else {
-                        // Patrulla
                         this.vx = this.patrolSpeed * this.patrolDir;
                         this.vy *= this.friction; 
                         if (this.x > this.patrolEndX) this.patrolDir = -1;
@@ -1685,28 +1709,24 @@
                 this.x += this.vx; 
                 this.y += this.vy;
 
-                // NUEVA FÍSICA CONTRA LAS ROCAS (Deslizamiento Tangencial)
                 rocksData.forEach(rock => {
                     if (!rock.active || Math.abs(rock.x - this.x) > 300) return;
-                    const radius = rock.size * 0.85 + 40; // Margen un poco holgado para que gire bien
+                    const radius = rock.size * 0.85 + 40; 
                     let dist = Math.hypot(rock.x - this.x, rock.y - this.y);
                     if (dist < radius) {
                         let overlap = radius - dist;
                         let dir = Math.atan2(this.y - rock.y, this.x - rock.x);
                         
-                        // Empujarlo físicamente fuera de la roca
                         this.x += Math.cos(dir) * overlap;
                         this.y += Math.sin(dir) * overlap;
                         
-                        // En vez de borrar la inercia, proyectarla a lo largo de la tangente (resbalar por la pared)
                         let nx = Math.cos(dir);
                         let ny = Math.sin(dir);
-                        let tx = -ny; // Vector Tangente X
-                        let ty = nx;  // Vector Tangente Y
+                        let tx = -ny; 
+                        let ty = nx;  
                         
                         let dot = this.vx * tx + this.vy * ty;
                         
-                        // Ajustar la velocidad para que mantenga su avance bordeando la forma
                         this.vx = tx * dot * 0.95 + nx * 0.05; 
                         this.vy = ty * dot * 0.95 + ny * 0.05;
                     }
@@ -1911,7 +1931,6 @@
 
             if (this.x + this.vx < -500) { this.vx = 0; this.x = -500; }
             
-            // ELIMINADO: gameState.kills.drone ya no suma al total de objetivos actuales
             let currentKills = gameState.kills.cargo + gameState.kills.meta + gameState.kills.dest + gameState.kills.frig + gameState.kills.miss;
             const objWarning = document.getElementById('objective-warning');
             
@@ -2492,7 +2511,14 @@
 
         if (!gameState.isPaused) {
             
-            // ELIMINADO: gameState.kills.drone ya no suma al total de objetivos actuales
+            // --- Sonido de Sonar de Fondo ---
+            const now = Date.now();
+            if (now - lastSonarTime > SONAR_INTERVAL) {
+                lastSonarTime = now;
+                playSonarPing();
+            }
+            // --------------------------------
+
             let currentKills = gameState.kills.cargo + gameState.kills.meta + gameState.kills.dest + gameState.kills.frig + gameState.kills.miss;
             
             if (!gameState.isAutoPiloting && player2D.x > LEVEL_END_X - 600) {
@@ -2566,7 +2592,6 @@
                 let et = enemyTorpedoesData[i]; et.update(); if (!et.active) { et.dispose(); enemyTorpedoesData.splice(i, 1); }
             }
 
-            // --- SISTEMA DE RESPAWN INFINITO ---
             const cfg = levelConfigs[gameState.level - 1];
             if (!gameState.isAutoPiloting && player2D.x < LEVEL_END_X - 1500) {
                 let spawnX = camera.position.x + GAME_WIDTH + 200; 
@@ -2576,12 +2601,7 @@
                 if (destroyersData.length < cfg.dest) destroyersData.push(new Destroyer2D(spawnX + Math.random() * 500));
                 if (frigatesData.length < cfg.frig) frigatesData.push(new Frigate2D(spawnX + Math.random() * 500));
                 if (missourisData.length < cfg.miss) missourisData.push(new Missouri2D(spawnX + Math.random() * 500));
-                if (dronesData.length < cfg.drone) {
-                    let dry = SEABED_LEVEL + 150 + Math.random() * (SURFACE_LEVEL - SEABED_LEVEL - 300);
-                    dronesData.push(new Drone2D(spawnX + Math.random() * 500, dry));
-                }
             }
-            // -----------------------------------
 
             for (let i = activeBubbles.length - 1; i >= 0; i--) {
                 let bubble = activeBubbles[i]; bubble.update(); if (bubble.isDead()) { bubble.dispose(); activeBubbles.splice(i, 1); }
@@ -2888,7 +2908,6 @@
         depthDisplay.textContent = gameState.depth + 'm';
         torpedoesDisplay.textContent = gameState.torpedoes;
         
-        // ELIMINADO: gameState.kills.drone ya no suma al total de objetivos actuales
         let currentKills = gameState.kills.cargo + gameState.kills.meta + gameState.kills.dest + gameState.kills.frig + gameState.kills.miss;
         const objectiveText = document.getElementById('objective-text');
         objectiveText.textContent = `OBJETIVO: ${currentKills}/${gameState.requiredTotalKills}`;
@@ -2937,8 +2956,14 @@
     function endGame(won = false) {
         gameState.isRunning = false; cancelAnimationFrame(animationId);
         
-        const restartBtn = document.getElementById('restart-btn');
+        const retryBtn = document.getElementById('retry-btn');
+        const menuBtn = document.getElementById('menu-btn');
+        const restartFullBtn = document.getElementById('restart-full-btn');
         const buttonsContainer = document.getElementById('game-over-buttons');
+
+        retryBtn.style.display = 'none';
+        menuBtn.style.display = 'none';
+        restartFullBtn.style.display = 'none';
         
         if (won) { 
             gameState.score += 5000 * gameState.level; 
@@ -2959,17 +2984,16 @@
                 endTitle.style.textShadow = "0 0 30px rgba(255,215,0,0.8)"; 
                 
                 buttonsContainer.style.display = 'flex';
-                restartBtn.style.display = 'inline-block';
-                restartBtn.textContent = 'Jugar de Nuevo';
+                restartFullBtn.style.display = 'inline-block';
             }
         } else { 
-            endTitle.textContent = "¡FIN DEL JUEGO!"; 
+            endTitle.textContent = "GAME OVER"; 
             endTitle.style.color = "#ff4d4d"; 
             endTitle.style.textShadow = "0 0 25px rgba(255,0,0,0.6)"; 
             
             buttonsContainer.style.display = 'flex';
-            restartBtn.style.display = 'inline-block';
-            restartBtn.textContent = 'Volver a Jugar';
+            retryBtn.style.display = 'inline-block';
+            menuBtn.style.display = 'inline-block';
         }
         
         finalScoreDisplay.textContent = Math.floor(gameState.score); 
@@ -2979,14 +3003,11 @@
         document.getElementById('objective-warning').style.display = 'none';
     }
 
-    function startLevel(levelNum, keepData) {
-        let oldScore = keepData ? gameState.score : 0;
-        let startTorpedoes = keepData ? gameState.torpedoes : 10; 
-        
+    function startLevel(levelNum) {
         gameState = {
-            isRunning: true, isPaused: false, score: oldScore, depth: 0, 
+            isRunning: true, isPaused: false, score: savedScore, depth: 0, 
             health: 100, maxHealth: 100, oxygen: 100, maxOxygen: 100, fuel: 100, maxFuel: 100, 
-            torpedoes: startTorpedoes, 
+            torpedoes: savedTorpedoes, 
             oxygenDepletionRate: 0.01 + (levelNum * 0.001), 
             oxygenRecoveryRate: 0.333, 
             fuelDepletionRate: 0.02 + (levelNum * 0.002), 
@@ -3003,18 +3024,45 @@
         document.getElementById('pause-btn').textContent = '⏸️ Pausa';
         document.getElementById('pause-overlay').style.display = 'none';
         gameOverScreen.style.display = 'none';
+
+        // Anunciar el nivel
+        const announcer = document.getElementById('level-announcer');
+        announcer.textContent = "NIVEL " + levelNum;
+        announcer.style.display = 'block';
+        void announcer.offsetWidth; // Forzar reflow para que la animación se vea
+        announcer.style.opacity = '1';
+
+        setTimeout(() => {
+            announcer.style.opacity = '0';
+            setTimeout(() => {
+                announcer.style.display = 'none';
+            }, 1000);
+        }, 2500);
         
         initEntities3D(); 
         gameLoop();
     }
 
+    function retryLevel() {
+        // Al morir y reintentar, la puntuación vuelve a 0
+        savedScore = 0; 
+        
+        // No modificamos savedTorpedoes, de modo que conservas exactamente 
+        // los que tenías la primera vez que entraste en este mismo nivel.
+        startLevel(gameState.level);
+    }
+
     function resetGame() {
-        startLevel(1, false);
+        savedScore = 0;
+        savedTorpedoes = 10;
+        startLevel(1);
     }
     
     function nextLevel() {
         if (gameState.level < 10) {
-            startLevel(gameState.level + 1, true);
+            savedScore = gameState.score;
+            savedTorpedoes = gameState.torpedoes;
+            startLevel(gameState.level + 1);
         }
     }
 
