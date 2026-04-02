@@ -8,15 +8,35 @@
         body { margin: 0; overflow: hidden; background-color: #050505; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
         #game-canvas-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         
-        /* PANTALLA DE INICIO */
-        #start-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #0a1a3a 0%, #000000 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 200; pointer-events: auto; text-align: center; }
-        #start-screen h1 { font-size: 90px; color: #00ffcc; margin-bottom: 20px; text-shadow: 0 0 30px rgba(0, 255, 204, 0.6); letter-spacing: 5px; }
-        #start-btn { margin-bottom: 30px; } /* Nuevo margen para separar el botón de los controles */
+        /* PANTALLA DE INICIO CON SCROLL DINÁMICO */
+        #start-screen { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: radial-gradient(circle at center, #0a1a3a 0%, #000000 100%); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center; 
+            z-index: 200; 
+            pointer-events: auto; 
+            text-align: center; 
+            overflow-y: auto; 
+            padding: 40px 20px; 
+            box-sizing: border-box; 
+        }
+        
+        #start-screen > * { flex-shrink: 0; }
+
+        #start-screen h1 { font-size: 90px; color: #00ffcc; margin-top: auto; margin-bottom: 20px; text-shadow: 0 0 30px rgba(0, 255, 204, 0.6); letter-spacing: 5px; }
+        #start-btn { margin-bottom: 30px; } 
         
         .controls-info { font-size: 18px !important; color: #aaa !important; margin-bottom: 30px !important; background: rgba(0,0,0,0.5); padding: 15px 30px; border-radius: 10px; border: 1px solid #333; }
         
         /* SELECTOR DE SUBMARINO */
-        .sub-selector { margin-bottom: 20px; z-index: 201; }
+        .sub-selector { margin-bottom: auto; z-index: 201; } 
         .sub-selector h3 { color: #ccc; margin-bottom: 15px; font-weight: normal; font-size: 20px; }
         .sub-options { display: flex; gap: 20px; justify-content: center; }
         .sub-option { padding: 12px 30px; border: 2px solid #444; border-radius: 8px; cursor: pointer; color: #aaa; font-weight: bold; font-size: 18px; background: rgba(0,0,0,0.6); transition: all 0.2s ease; letter-spacing: 1px; }
@@ -46,37 +66,9 @@
         #oxygen-bar-fill { width: 100%; height: 100%; background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); transition: width 0.1s linear, background 0.3s ease; }
         #fuel-bar-fill { width: 100%; height: 100%; background: linear-gradient(to right, #00aa00 0%, #00ff00 100%); transition: width 0.1s linear, background 0.3s ease; }
 
-        .kills-panel { 
-            margin-top: 20px; 
-            padding: 15px; 
-            background: rgba(0, 0, 0, 0.5); 
-            border-radius: 8px; 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            font-size: 14px; 
-            color: #ccc; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px;
-            width: 180px; 
-            box-sizing: border-box;
-        }
-        .kills-title { 
-            color: #fff; 
-            font-weight: bold; 
-            margin-bottom: 5px; 
-            text-align: center; 
-            border-bottom: 1px solid #555; 
-            padding-bottom: 5px; 
-        }
-        #objective-text {
-            color: #ff4d4d; 
-            font-weight: 900; 
-            text-align: center; 
-            margin-bottom: 8px; 
-            font-size: 16px;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-        }
+        .kills-panel { margin-top: 20px; padding: 15px; background: rgba(0, 0, 0, 0.5); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); font-size: 14px; color: #ccc; display: flex; flex-direction: column; gap: 6px; width: 180px; box-sizing: border-box; }
+        .kills-title { color: #fff; font-weight: bold; margin-bottom: 5px; text-align: center; border-bottom: 1px solid #555; padding-bottom: 5px; }
+        #objective-text { color: #ff4d4d; font-weight: 900; text-align: center; margin-bottom: 8px; font-size: 16px; letter-spacing: 1px; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
         .kill-row { display: flex; justify-content: space-between; align-items: center; }
         .kill-row span { color: #fff; font-weight: bold; }
 
@@ -105,13 +97,10 @@
         
         #save-score-btn { background: linear-gradient(to bottom, #ffcc00, #ff9900); color: #000; box-shadow: 0 6px 25px rgba(255, 204, 0, 0.4); padding: 15px 50px; }
         #save-score-btn:hover { box-shadow: 0 10px 30px rgba(255, 204, 0, 0.6); }
-
         #retry-btn { background: linear-gradient(to bottom, #ffcc00, #ff9900); color: #000; box-shadow: 0 6px 25px rgba(255, 204, 0, 0.4); }
         #retry-btn:hover { box-shadow: 0 10px 30px rgba(255, 204, 0, 0.6); }
-        
         #menu-btn { background: linear-gradient(to bottom, #777, #444); color: white; box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6); }
         #menu-btn:hover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); }
-
         #restart-full-btn { background: linear-gradient(to bottom, #ff9966, #ff5e62); color: white; box-shadow: 0 6px 25px rgba(255, 94, 98, 0.6); }
         #restart-full-btn:hover { box-shadow: 0 10px 30px rgba(255, 94, 98, 0.8); }
 
@@ -232,8 +221,6 @@
     let lastSonarTime = 0;
     const SONAR_INTERVAL = 3000;
 
-    // --- SISTEMA DE PUNTUACIONES LOCALES (RANKING VIRGEN) ---
-    // Inicializado como un array vacío para que no haya puntuaciones ficticias
     let highScores = JSON.parse(localStorage.getItem('tenteUBootHighScores')) || [];
 
     function renderHighScores() {
@@ -259,7 +246,7 @@
     }
 
     function checkHighScore(score) {
-        if (score <= 0) return false; // No permitimos guardar puntuaciones de 0
+        if (score <= 0) return false; 
         return highScores.length < 5 || score > highScores[highScores.length - 1].score;
     }
 
@@ -269,19 +256,16 @@
         
         highScores.push({ name: name, score: Math.floor(gameState.score) });
         highScores.sort((a, b) => b.score - a.score);
-        highScores = highScores.slice(0, 5); // Mantener solo top 5
+        highScores = highScores.slice(0, 5); 
         localStorage.setItem('tenteUBootHighScores', JSON.stringify(highScores));
         
         renderHighScores();
         
-        // Cerrar modal y mostrar pantalla normal de GameOver
         document.getElementById('initials-modal').style.display = 'none';
         document.getElementById('game-over-screen').style.display = 'flex';
     }
 
-    // Inicializar ranking al cargar script
     renderHighScores();
-
 
     function selectSubmarine(img, elementId) {
         selectedSubmarineImage = img;
@@ -327,7 +311,7 @@
         document.getElementById('game-over-screen').style.display = 'none';
         document.getElementById('initials-modal').style.display = 'none';
         
-        renderHighScores(); // Actualiza por si acaso
+        renderHighScores(); 
         document.getElementById('start-screen').style.display = 'flex';
     }
 
@@ -356,6 +340,30 @@
         { kills: 25, length: 18000, cargo: 8, meta: 7, dest: 10, frig: 9, miss: 4, drone: 10, mines: 100, fuels: 2, oxygens: 2, ammos: 4, fish: 5 }, 
         { kills: 28, length: 20000, cargo: 9, meta: 7, dest: 11, frig: 10, miss: 5, drone: 11, mines: 130, fuels: 2, oxygens: 1, ammos: 4, fish: 5 } 
     ];
+
+    // TEXTURA GENERADA DINÁMICAMENTE PARA LA "PÓCIMA T"
+    function createTPowerUpTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128; canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        
+        ctx.fillStyle = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(64, 64, 60, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#000000';
+        ctx.stroke();
+        
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(34, 30, 60, 16); 
+        ctx.fillRect(56, 30, 16, 60); 
+        
+        return new THREE.CanvasTexture(canvas);
+    }
+    const tPowerUpTexture = createTPowerUpTexture();
+
 
     function playSonarPing() {
         if (isMuted) return;
@@ -482,6 +490,22 @@
         osc.stop(audioCtx.currentTime + 0.1);
     }
 
+    function playMagicSound() {
+        if (isMuted) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine'; 
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(2000, audioCtx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime); 
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.connect(gain); 
+        gain.connect(audioCtx.destination);
+        osc.start(); 
+        osc.stop(audioCtx.currentTime + 0.5);
+    }
+
     let lastCreakTime = 0;
     function playCreakSound() {
         if (isMuted) return;
@@ -565,6 +589,7 @@
     let sinkingMinesData = []; 
     let fuelsData = [];
     let oxygenTanksData = []; 
+    let tPowerUpsData = []; 
     let cargoShipsData = []; 
     let metanerosData = [];
     let destroyersData = [];
@@ -1194,6 +1219,7 @@
                 else if (r < 0.85) oxygenTanksData.push(new OxygenTank3DStatic(dropX, dropY, true));
                 else torpedoAmmoData.push(new TorpedoAmmo3DStatic(dropX, dropY, true));
             }
+            if (Math.random() < 0.03) tPowerUpsData.push(new TPowerUp3DStatic(this.x, this.y - 30, true));
         }
         dispose() { this.active = false; entitiesGroup.remove(this.container); this.visualMesh.geometry.dispose(); this.visualMesh.material.dispose(); }
     }
@@ -1273,6 +1299,7 @@
                 else if (r < 0.85) oxygenTanksData.push(new OxygenTank3DStatic(dropX, dropY, true));
                 else torpedoAmmoData.push(new TorpedoAmmo3DStatic(dropX, dropY, true));
             }
+            if (Math.random() < 0.04) tPowerUpsData.push(new TPowerUp3DStatic(this.x, this.y - 30, true));
         }
         dispose() { this.active = false; entitiesGroup.remove(this.container); this.visualMesh.geometry.dispose(); this.visualMesh.material.dispose(); }
     }
@@ -1308,6 +1335,7 @@
                 else if (r < 0.75) oxygenTanksData.push(new OxygenTank3DStatic(dropX, dropY, true));
                 else torpedoAmmoData.push(new TorpedoAmmo3DStatic(dropX, dropY, true));
             }
+            if (Math.random() < 0.05) tPowerUpsData.push(new TPowerUp3DStatic(this.x, this.y - 30, true));
         }
         update() {
             if (!this.active) return;
@@ -1399,6 +1427,7 @@
                 else if (r < 0.70) materialsData.push(new Material3DStatic(dropX, dropY, true));
                 else oxygenTanksData.push(new OxygenTank3DStatic(dropX, dropY, true));
             }
+            if (Math.random() < 0.05) tPowerUpsData.push(new TPowerUp3DStatic(this.x, this.y - 30, true));
         }
         update() {
             if (!this.active) return;
@@ -1526,6 +1555,7 @@
                 else if (r < 0.75) oxygenTanksData.push(new OxygenTank3DStatic(dropX, dropY, true));
                 else torpedoAmmoData.push(new TorpedoAmmo3DStatic(dropX, dropY, true));
             }
+            if (Math.random() < 0.10) tPowerUpsData.push(new TPowerUp3DStatic(this.x, this.y - 30, true));
         }
 
         update() {
@@ -1682,96 +1712,56 @@
                     let distToPlayerY = Math.abs(this.y - player2D.y);
                     let distToPlayer = Math.hypot(distToPlayerX, distToPlayerY);
                     
-                    if (distToPlayer < 500) {
+                    let hasLoS = checkLineOfSight(this.x, this.y, player2D.x, player2D.y, 20);
+
+                    // Solo nos detecta si estamos a menos de 550 y NO hay rocas de por medio
+                    if (distToPlayer < 550 && hasLoS) {
                         this.detectedPlayer = true;
+                    } else {
+                        // Si nos escondemos detrás de una roca o nos alejamos, pierde el rastro
+                        this.detectedPlayer = false;
                     }
                     
                     if (this.detectedPlayer) {
-                        let hasLoS = checkLineOfSight(this.x, this.y, player2D.x, player2D.y, 20);
 
-                        if (!hasLoS) {
-                            let angleToPlayer = Math.atan2(player2D.y - this.y, player2D.x - this.x);
-                            let bestAngle = angleToPlayer;
-                            let pathFound = false;
-
-                            if (!this.evasionPref) this.evasionPref = Math.random() > 0.5 ? 1 : -1;
-
-                            let steps = 16;
-                            let angleStep = Math.PI * 2 / steps;
+                        if (this.ammo > 0) {
+                            let optimalDistMin = 300;
+                            let optimalDistMax = 450;
                             
-                            for (let i = 1; i <= steps / 2; i++) {
-                                let angle1 = angleToPlayer + i * angleStep * this.evasionPref;
-                                let angle2 = angleToPlayer - i * angleStep * this.evasionPref;
-                                
-                                let checkDist = 250; 
-
-                                let p1X = this.x + Math.cos(angle1) * checkDist;
-                                let p1Y = this.y + Math.sin(angle1) * checkDist;
-                                if (checkLineOfSight(this.x, this.y, p1X, p1Y, 50)) {
-                                    bestAngle = angle1;
-                                    pathFound = true;
-                                    break;
-                                }
-
-                                let p2X = this.x + Math.cos(angle2) * checkDist;
-                                let p2Y = this.y + Math.sin(angle2) * checkDist;
-                                if (checkLineOfSight(this.x, this.y, p2X, p2Y, 50)) {
-                                    bestAngle = angle2;
-                                    pathFound = true;
-                                    this.evasionPref *= -1; 
-                                    break;
-                                }
-                            }
-
-                            if (pathFound) {
-                                this.vx += Math.cos(bestAngle) * this.acceleration * 1.5;
-                                this.vy += Math.sin(bestAngle) * this.acceleration * 1.5;
+                            if (distToPlayerX > optimalDistMax) {
+                                if (this.x < player2D.x) this.vx += this.acceleration;
+                                else this.vx -= this.acceleration;
+                            } else if (distToPlayerX < optimalDistMin) {
+                                if (this.x < player2D.x) this.vx -= this.acceleration;
+                                else this.vx += this.acceleration;
                             } else {
-                                let centerAngle = Math.atan2((SURFACE_LEVEL + SEABED_LEVEL)/2 - this.y, (this.x + 100) - this.x);
-                                this.vx += Math.cos(centerAngle) * this.acceleration;
-                                this.vy += Math.sin(centerAngle) * this.acceleration;
+                                this.vx *= this.friction;
+                            }
+                            
+                            if (this.y < player2D.y - 30) this.vy += this.acceleration * 0.7;
+                            else if (this.y > player2D.y + 30) this.vy -= this.acceleration * 0.7;
+                            else this.vy *= this.friction;
+                            
+                            if (!this.activeTorpedo || !this.activeTorpedo.active) {
+                                if (distToPlayerY < 80 && distToPlayerX < 350) {
+                                    let dirX = this.x < player2D.x ? 1 : -1;
+                                    let torp = new EnemyTorpedo3D(this.x + dirX * 30, this.y, dirX, 12.5); 
+                                    torp.phase = 'water'; torp.vy = 0; 
+                                    enemyTorpedoesData.push(torp);
+                                    this.activeTorpedo = torp;
+                                    this.ammo--; 
+                                }
                             }
                         } else {
-                            this.evasionPref = null;
-
-                            if (this.ammo > 0) {
-                                let optimalDistMin = 300;
-                                let optimalDistMax = 450;
-                                
-                                if (distToPlayerX > optimalDistMax) {
-                                    if (this.x < player2D.x) this.vx += this.acceleration;
-                                    else this.vx -= this.acceleration;
-                                } else if (distToPlayerX < optimalDistMin) {
-                                    if (this.x < player2D.x) this.vx -= this.acceleration;
-                                    else this.vx += this.acceleration;
-                                } else {
-                                    this.vx *= this.friction;
-                                }
-                                
-                                if (this.y < player2D.y - 30) this.vy += this.acceleration * 0.7;
-                                else if (this.y > player2D.y + 30) this.vy -= this.acceleration * 0.7;
-                                else this.vy *= this.friction;
-                                
-                                if (!this.activeTorpedo || !this.activeTorpedo.active) {
-                                    if (distToPlayerY < 80 && distToPlayerX < 350) {
-                                        let dirX = this.x < player2D.x ? 1 : -1;
-                                        let torp = new EnemyTorpedo3D(this.x + dirX * 30, this.y, dirX, 12.5); 
-                                        torp.phase = 'water'; torp.vy = 0; 
-                                        enemyTorpedoesData.push(torp);
-                                        this.activeTorpedo = torp;
-                                        this.ammo--; 
-                                    }
-                                }
-                            } else {
-                                if (this.x < player2D.x) this.vx += this.acceleration * 1.5;
-                                else this.vx -= this.acceleration * 1.5;
-                                
-                                if (this.y < player2D.y) this.vy += this.acceleration * 1.5;
-                                else this.vy -= this.acceleration * 1.5;
-                            }
+                            if (this.x < player2D.x) this.vx += this.acceleration * 1.5;
+                            else this.vx -= this.acceleration * 1.5;
+                            
+                            if (this.y < player2D.y) this.vy += this.acceleration * 1.5;
+                            else this.vy -= this.acceleration * 1.5;
                         }
                     } else {
-                        this.vx = this.patrolSpeed * this.patrolDir;
+                        // Modo patrulla estándar cuando no ve al submarino
+                        this.vx += (this.patrolSpeed * this.patrolDir - this.vx) * 0.05;
                         this.vy *= this.friction; 
                         if (this.x > this.patrolEndX) this.patrolDir = -1;
                         if (this.x < this.patrolStartX) this.patrolDir = 1;
@@ -1918,6 +1908,14 @@
             this.setupImageModel();
         }
         setupImageModel() {
+            // Aura de inmunidad - ÓVALO PERFECTO
+            const auraMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
+            this.auraMesh = new THREE.Mesh(new THREE.CircleGeometry(1, 32), auraMat);
+            this.auraMesh.scale.set(this.visualWidth * 0.55, this.visualHeight * 0.6, 1);
+            this.auraMesh.position.z = -1;
+            this.auraMesh.visible = false;
+            this.container.add(this.auraMesh);
+
             const material = new THREE.MeshBasicMaterial({ color: 0x555555, transparent: true, side: THREE.DoubleSide });
             this.visualMesh = new THREE.Mesh(new THREE.PlaneGeometry(this.visualWidth, this.visualHeight), material);
             this.container.add(this.visualMesh);
@@ -1949,6 +1947,18 @@
             }
         }
         update() {
+            let isInvulnerable = gameState.invulnerabilityTimer > Date.now();
+            this.auraMesh.visible = isInvulnerable;
+            
+            if (isInvulnerable) {
+                this.maxSpeed = 6.5; 
+                this.acceleration = 0.3;
+                this.auraMesh.material.opacity = 0.4 + Math.sin(Date.now() * 0.01) * 0.3;
+            } else {
+                this.maxSpeed = 4.0;
+                this.acceleration = 0.15;
+            }
+
             if (gameState.isAutoPiloting) {
                 let targetX = LEVEL_END_X + 500; 
                 let targetY = SEABED_LEVEL + 350; 
@@ -2036,7 +2046,7 @@
             
             if (isCurrentlyUnderwater) this.emitBubbles();
 
-            if (gameState.health <= 40 && !gameState.isAutoPiloting) {
+            if (gameState.health <= 40 && !gameState.isAutoPiloting && !isInvulnerable) {
                 if (Math.random() > 0.5) {
                     let offset = this.facingRight ? -0.4 : 0.4;
                     let tailX = this.x + (this.visualWidth * offset);
@@ -2301,22 +2311,47 @@
         dispose() { this.active = false; entitiesGroup.remove(this.mesh); }
     }
 
+    // CAJA DE HERRAMIENTAS (Materiales / Salud)
     class Material3DStatic {
         constructor(x, y, isLoot = false) {
-            this.x = x; this.baseY = y; this.active = true; this.size = 22; 
+            this.x = x; this.baseY = y; this.active = true; this.size = 14; 
             this.isLoot = isLoot; this.spawnTime = Date.now(); this.lifespan = 20000;
             if (this.isLoot) {
                 this.falling = true; this.fallSpeed = 0.4 + Math.random() * 0.3;
             } else { this.falling = false; }
+            
             this.mesh = new THREE.Group();
-            const ironMat = new THREE.MeshStandardMaterial({ color: 0xd2b48c, metalness: 0.3, roughness: 0.6 });
-            const handle = new THREE.Mesh(new THREE.BoxGeometry(4, 26, 3), ironMat);
-            const headBase = new THREE.Mesh(new THREE.BoxGeometry(14, 6, 3), ironMat); headBase.position.y = 16;
-            const leftJaw = new THREE.Mesh(new THREE.BoxGeometry(4, 10, 3), ironMat); leftJaw.position.set(-5, 20, 0);
-            const rightJaw = new THREE.Mesh(new THREE.BoxGeometry(4, 10, 3), ironMat); rightJaw.position.set(5, 20, 0);
-            this.mesh.add(handle); this.mesh.add(headBase); this.mesh.add(leftJaw); this.mesh.add(rightJaw);
+            
+            // Base roja
+            const boxMat = new THREE.MeshStandardMaterial({ color: 0xcc1111, roughness: 0.7 });
+            const box = new THREE.Mesh(new THREE.BoxGeometry(22, 14, 12), boxMat);
+            
+            // Cruz verde brillante para que se vea perfectamente
+            const crossMat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const crossV = new THREE.Mesh(new THREE.BoxGeometry(4, 10, 12.5), crossMat);
+            const crossH = new THREE.Mesh(new THREE.BoxGeometry(10, 4, 12.5), crossMat);
+            
+            // Asa de la caja
+            const handleMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+            const handleTop = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 10, 8), handleMat);
+            handleTop.rotation.z = Math.PI / 2;
+            handleTop.position.y = 10;
+            const handleL = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4, 8), handleMat);
+            handleL.position.set(-4.5, 8, 0);
+            const handleR = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4, 8), handleMat);
+            handleR.position.set(4.5, 8, 0);
+            
+            this.mesh.add(box); 
+            this.mesh.add(crossV); 
+            this.mesh.add(crossH);
+            this.mesh.add(handleTop); 
+            this.mesh.add(handleL); 
+            this.mesh.add(handleR);
+
             this.mesh.position.set(this.x, this.baseY, 10);
-            this.floatOffset = Math.random() * Math.PI; this.mesh.rotation.z = Math.random() * Math.PI; 
+            this.floatOffset = Math.random() * Math.PI; 
+            // Rotación inicial aleatoria en Y
+            this.mesh.rotation.y = Math.random() * Math.PI; 
             entitiesGroup.add(this.mesh);
         }
         update() {
@@ -2353,9 +2388,62 @@
             }
             this.y = this.baseY + (this.falling ? 0 : Math.sin(Date.now() * 0.004 + this.floatOffset) * 6);
             this.mesh.position.y = this.y;
-            if (!this.falling) { this.mesh.rotation.z += 0.01; }
+            // Gira sobre su eje vertical para ser más dinámico
+            if (!this.falling) { this.mesh.rotation.y += 0.015; }
         }
         dispose() { this.active = false; entitiesGroup.remove(this.mesh); }
+    }
+
+    // CLASE PARA LA RECOMPENSA "T"
+    class TPowerUp3DStatic {
+        constructor(x, y, isLoot = false) {
+            this.x = x; this.baseY = y; this.active = true; this.size = 12; 
+            this.isLoot = isLoot; this.spawnTime = Date.now(); this.lifespan = 20000;
+            if (this.isLoot) {
+                this.falling = true; this.fallSpeed = 0.3 + Math.random() * 0.2;
+            } else { this.falling = false; }
+            
+            const mat = new THREE.MeshBasicMaterial({ map: tPowerUpTexture });
+            this.mesh = new THREE.Mesh(new THREE.CylinderGeometry(this.size, this.size, 2, 16), mat);
+            this.mesh.rotation.x = Math.PI / 2; 
+            
+            this.mesh.position.set(this.x, this.baseY, 10);
+            this.floatOffset = Math.random() * Math.PI;
+            entitiesGroup.add(this.mesh);
+        }
+        update() {
+            if (!this.active) return;
+            if (this.x < camera.position.x - GAME_WIDTH * 1.5) { this.dispose(); return; }
+            if (this.isLoot) {
+                if (this.falling) {
+                    this.baseY -= this.fallSpeed;
+                    let hitSurface = false;
+                    for (let i = 0; i < rocksData.length; i++) {
+                        let rock = rocksData[i];
+                        if (rock.active && Math.abs(rock.x - this.x) < rock.size * 0.75) {
+                            let rockTop = rock.y + rock.size * 0.75;
+                            if (this.baseY <= rockTop + this.size && this.baseY > rock.y) {
+                                this.baseY = rockTop + this.size; hitSurface = true; break;
+                            }
+                        }
+                    }
+                    if (!hitSurface && this.baseY <= SEABED_LEVEL + this.size + 10) {
+                        this.baseY = SEABED_LEVEL + this.size + 10; hitSurface = true;
+                    }
+                    if (hitSurface) {
+                        this.falling = false; this.spawnTime = Date.now();
+                    }
+                } else {
+                    let age = Date.now() - this.spawnTime;
+                    if (age > this.lifespan) { this.dispose(); return; }
+                    if (age > this.lifespan - 3000) { this.mesh.visible = Math.floor(age / 200) % 2 === 0; }
+                }
+            }
+            this.y = this.baseY + (this.falling ? 0 : Math.sin(Date.now() * 0.005 + this.floatOffset) * 6);
+            this.mesh.position.y = this.y;
+            if (!this.falling) { this.mesh.rotation.y += 0.02; }
+        }
+        dispose() { this.active = false; entitiesGroup.remove(this.mesh); this.mesh.geometry.dispose(); }
     }
 
 
@@ -2377,11 +2465,16 @@
         rocksData = []; minesData = []; sinkingMinesData = []; fuelsData = []; oxygenTanksData = [];
         cargoShipsData = []; metanerosData = []; destroyersData = []; frigatesData = []; missourisData = [];
         dronesData = []; torpedoAmmoData = []; materialsData = []; fishesData = []; sharksData = []; jellyfishData = [];
+        tPowerUpsData = [];
 
         const cfg = levelConfigs[gameState.level - 1];
         LEVEL_END_X = cfg.length;
 
         new EndMountain3D(LEVEL_END_X);
+
+        if (gameState.level === 1) {
+            tPowerUpsData.push(new TPowerUp3DStatic(1300, SURFACE_LEVEL - 150, false));
+        }
 
         let cursorX = 800; 
         const rockSpacing = 45; 
@@ -2490,6 +2583,15 @@
             let ty = bottomLimit + 40 + Math.random() * (topLimit - bottomLimit - 80);
             torpedoAmmoData.push(new TorpedoAmmo3DStatic(tx, ty, false));
         }
+        
+        // AGREGADO: Generar materiales (vida) aleatorios por el mapa
+        let materialsCount = Math.floor(cfg.fuels * 0.7); 
+        for (let i = 0; i < materialsCount; i++) {
+            let mx = 1200 + Math.random() * (LEVEL_END_X - 1800);
+            let my = bottomLimit + 30 + Math.random() * (topLimit - bottomLimit - 60);
+            materialsData.push(new Material3DStatic(mx, my, false));
+        }
+
         for (let i = 0; i < cfg.fish; i++) {
             let px = 1000 + Math.random() * (LEVEL_END_X - 1000);
             fishesData.push(new FishSchool3D(px));
@@ -2576,6 +2678,8 @@
         enemyTorpedoesData.forEach(torp => { if (torp.active) drawBlip(torp.x, torp.y, '#ff00ff', 2, false); });
         minesData.forEach(mine => { if (mine.active) drawBlip(mine.x, mine.y, '#ffff00', 1.5, false); });
         sinkingMinesData.forEach(smine => { if (smine.active) drawBlip(smine.x, smine.y, '#ff8800', 2, false); }); 
+        
+        tPowerUpsData.forEach(t => { if (t.active) drawBlip(t.x, t.y, '#00ffcc', 3.5, false); });
 
         radarCtx.fillStyle = '#00ff00'; radarCtx.shadowBlur = 10; radarCtx.shadowColor = '#00ff00';
         radarCtx.beginPath(); radarCtx.arc(centerX, centerY, 5, 0, Math.PI); radarCtx.fill(); radarCtx.shadowBlur = 0;
@@ -2627,15 +2731,37 @@
             seabedMesh.position.x = camera.position.x; 
             directionalLight.position.x = camera.position.x + 300;
 
-            rocksData.forEach(rock => rock.update()); 
-            minesData.forEach(mine => mine.update());
-            fuelsData.forEach(fuel => fuel.update());
-            oxygenTanksData.forEach(ot => ot.update());
-            torpedoAmmoData.forEach(ammo => ammo.update());
-            materialsData.forEach(mat => mat.update());
-            fishesData.forEach(fish => fish.update());
-            jellyfishData.forEach(jelly => jelly.update()); 
-            sharksData.forEach(shark => shark.update());
+            // Uso de bucles inversos con splice para evitar fugas de memoria
+            for (let i = rocksData.length - 1; i >= 0; i--) {
+                let rock = rocksData[i]; rock.update(); if (!rock.active) rocksData.splice(i, 1);
+            }
+            for (let i = minesData.length - 1; i >= 0; i--) {
+                let mine = minesData[i]; mine.update(); if (!mine.active) minesData.splice(i, 1);
+            }
+            for (let i = fuelsData.length - 1; i >= 0; i--) {
+                let fuel = fuelsData[i]; fuel.update(); if (!fuel.active) fuelsData.splice(i, 1);
+            }
+            for (let i = oxygenTanksData.length - 1; i >= 0; i--) {
+                let ot = oxygenTanksData[i]; ot.update(); if (!ot.active) oxygenTanksData.splice(i, 1);
+            }
+            for (let i = torpedoAmmoData.length - 1; i >= 0; i--) {
+                let ammo = torpedoAmmoData[i]; ammo.update(); if (!ammo.active) torpedoAmmoData.splice(i, 1);
+            }
+            for (let i = materialsData.length - 1; i >= 0; i--) {
+                let mat = materialsData[i]; mat.update(); if (!mat.active) materialsData.splice(i, 1);
+            }
+            for (let i = fishesData.length - 1; i >= 0; i--) {
+                let fish = fishesData[i]; fish.update(); if (!fish.active) fishesData.splice(i, 1);
+            }
+            for (let i = jellyfishData.length - 1; i >= 0; i--) {
+                let jelly = jellyfishData[i]; jelly.update(); if (!jelly.active) jellyfishData.splice(i, 1);
+            }
+            for (let i = sharksData.length - 1; i >= 0; i--) {
+                let shark = sharksData[i]; shark.update(); if (!shark.active) sharksData.splice(i, 1);
+            }
+            for (let i = tPowerUpsData.length - 1; i >= 0; i--) {
+                let tp = tPowerUpsData[i]; tp.update(); if (!tp.active) tPowerUpsData.splice(i, 1);
+            }
             
             for (let i = cargoShipsData.length - 1; i >= 0; i--) {
                 let ship = cargoShipsData[i]; ship.update(); if (!ship.active) cargoShipsData.splice(i, 1);
@@ -2717,6 +2843,9 @@
     }
 
     function updatePressureDamage() {
+        // Bloquear el daño por presión si se tiene la inmunidad activa
+        if (gameState.invulnerabilityTimer > Date.now()) return;
+
         if (gameState.depth > 200) {
             let excessDepth = gameState.depth - 200;
             let damage = excessDepth * 0.00015; 
@@ -2730,6 +2859,8 @@
     function handleCollisions() {
         if (gameState.isAutoPiloting) return; 
         
+        let isInvulnerable = gameState.invulnerabilityTimer > Date.now();
+
         const subLeft = player2D.x - player2D.hitboxWidth / 2;
         const subRight = player2D.x + player2D.hitboxWidth / 2;
         const subTop = player2D.y + player2D.hitboxHeight / 2;
@@ -2766,13 +2897,15 @@
                     player2D.vx -= dotProduct * nx * 1.5; 
                     player2D.vy -= dotProduct * ny * 1.5;
                     let impactDamage = dotProduct * 1.5;
-                    if (impactDamage > 0.5) { 
+                    if (impactDamage > 0.5 && !isInvulnerable) { 
                         gameState.health -= impactDamage * 0.3; 
                         gameState.screenShake = impactDamage * 1.0; 
                     }
                 }
-                gameState.health -= 0.02; 
-                if (gameState.health <= 0) endGame(false);
+                if (!isInvulnerable) {
+                    gameState.health -= 0.02; 
+                    if (gameState.health <= 0) endGame(false);
+                }
             }
         });
 
@@ -2781,8 +2914,10 @@
             const mineHitbox = mine.size + 4; 
             if (subRight > mine.x - mineHitbox && subLeft < mine.x + mineHitbox && subTop > mine.y - mineHitbox && subBottom < mine.y + mineHitbox) {
                 createExplosion(mine.x, mine.y, 1.0); mine.dispose();
-                gameState.health -= 40; gameState.screenShake = 25; 
-                if (gameState.health <= 0) endGame(false);
+                if (!isInvulnerable) {
+                    gameState.health -= 40; gameState.screenShake = 25; 
+                    if (gameState.health <= 0) endGame(false);
+                }
             }
         });
 
@@ -2791,8 +2926,10 @@
             const mineHitbox = smine.size + 4; 
             if (subRight > smine.x - mineHitbox && subLeft < smine.x + mineHitbox && subTop > smine.y - mineHitbox && subBottom < smine.y + mineHitbox) {
                 createExplosion(smine.x, smine.y, 1.5); smine.dispose();
-                gameState.health -= 20; gameState.screenShake = 15; 
-                if (gameState.health <= 0) endGame(false);
+                if (!isInvulnerable) {
+                    gameState.health -= 20; gameState.screenShake = 15; 
+                    if (gameState.health <= 0) endGame(false);
+                }
             }
         });
 
@@ -2801,9 +2938,11 @@
             if (subRight > drone.x - drone.hitboxWidth/2 && subLeft < drone.x + drone.hitboxWidth/2 && 
                 subTop > drone.y - drone.hitboxHeight/2 && subBottom < drone.y + drone.hitboxHeight/2) {
                 createExplosion(drone.x, drone.y, 2.0); drone.startSinking();
-                let collisionDamage = drone.ammo <= 0 ? 25 : 15;
-                gameState.health -= collisionDamage; gameState.screenShake = 15; 
-                if (gameState.health <= 0) endGame(false);
+                if (!isInvulnerable) {
+                    let collisionDamage = drone.ammo <= 0 ? 25 : 15;
+                    gameState.health -= collisionDamage; gameState.screenShake = 15; 
+                    if (gameState.health <= 0) endGame(false);
+                }
             }
         });
 
@@ -2904,8 +3043,12 @@
             if (!et.active) return;
             
             if (et.phase === 'water' && et.x > subLeft && et.x < subRight && et.y > subBottom - 25 && et.y < subTop) {
-                createExplosion(et.x, et.y, 2.0); et.dispose(); gameState.health -= et.damage; gameState.screenShake = 20;
-                if (gameState.health <= 0) endGame(false); return; 
+                createExplosion(et.x, et.y, 2.0); et.dispose(); 
+                if (!isInvulnerable) {
+                    gameState.health -= et.damage; gameState.screenShake = 20;
+                    if (gameState.health <= 0) endGame(false);
+                }
+                return; 
             }
 
             let hitRock = false;
@@ -2943,6 +3086,15 @@
                         createExplosion(et.x, et.y, 3.0); et.dispose(); frig.hp--; if(frig.hp <= 0) { frig.startSinking(); gameState.kills.frig++; }
                     }
                 });
+            }
+        });
+
+        tPowerUpsData.forEach(tp => {
+            if (!tp.active || Math.abs(tp.x - player2D.x) > 400) return;
+            if (subRight > tp.x - tp.size && subLeft < tp.x + tp.size && subTop > tp.y - tp.size && subBottom < tp.y + tp.size) {
+                playMagicSound();
+                gameState.invulnerabilityTimer = Date.now() + 10000; 
+                tp.dispose();
             }
         });
 
@@ -2997,17 +3149,30 @@
         document.getElementById('kill-miss').textContent = gameState.kills.miss;
         document.getElementById('kill-drone').textContent = gameState.kills.drone;
 
-        if (gameState.depth > 200) { pressureWarning.style.visibility = 'visible'; } else { pressureWarning.style.visibility = 'hidden'; }
+        if (gameState.depth > 200 && gameState.invulnerabilityTimer <= Date.now()) { 
+            pressureWarning.style.visibility = 'visible'; 
+        } else { 
+            pressureWarning.style.visibility = 'hidden'; 
+        }
 
         let progress = Math.max(0, Math.min(100, (player2D.x / LEVEL_END_X) * 100));
         progressText.textContent = Math.floor(progress) + '%';
 
         healthText.textContent = Math.max(0, Math.floor(gameState.health)) + '%';
         const healthPercentage = (gameState.health / gameState.maxHealth) * 100;
-        healthBarFill.style.width = Math.max(0, healthPercentage) + '%';
-        if (healthPercentage < 25) healthBarFill.style.background = 'linear-gradient(to right, #ff0000 0%, #cc0000 100%)';
-        else if (healthPercentage < 50) healthBarFill.style.background = 'linear-gradient(to right, #ffcc00 0%, #ff9900 100%)';
-        else healthBarFill.style.background = 'linear-gradient(to right, #00ff00 0%, #00aa00 100%)';
+        
+        if (gameState.invulnerabilityTimer > Date.now()) {
+            healthBarFill.style.width = '100%';
+            healthBarFill.style.background = 'linear-gradient(to right, #00ffff 0%, #0088ff 100%)';
+            healthText.textContent = 'INVENCIBLE';
+            healthText.style.color = '#00ffff';
+        } else {
+            healthText.style.color = 'white';
+            healthBarFill.style.width = Math.max(0, healthPercentage) + '%';
+            if (healthPercentage < 25) healthBarFill.style.background = 'linear-gradient(to right, #ff0000 0%, #cc0000 100%)';
+            else if (healthPercentage < 50) healthBarFill.style.background = 'linear-gradient(to right, #ffcc00 0%, #ff9900 100%)';
+            else healthBarFill.style.background = 'linear-gradient(to right, #00ff00 0%, #00aa00 100%)';
+        }
 
         oxygenText.textContent = Math.floor(gameState.oxygen) + '%';
         const oxygenPercentage = (gameState.oxygen / gameState.maxOxygen) * 100;
@@ -3078,7 +3243,6 @@
         autopilotNotification.style.display = 'none';
         document.getElementById('objective-warning').style.display = 'none';
 
-        // Lógica de High Score cuando termina la partida
         if (isFinalGameOver) {
             if (checkHighScore(Math.floor(gameState.score))) {
                 document.getElementById('new-record-score').textContent = Math.floor(gameState.score);
@@ -3098,6 +3262,7 @@
             isRunning: true, isPaused: false, score: savedScore, depth: 0, 
             health: 100, maxHealth: 100, oxygen: 100, maxOxygen: 100, fuel: 100, maxFuel: 100, 
             torpedoes: savedTorpedoes, 
+            invulnerabilityTimer: 0, 
             oxygenDepletionRate: 0.01 + (levelNum * 0.001), 
             oxygenRecoveryRate: 0.333, 
             fuelDepletionRate: 0.02 + (levelNum * 0.002), 
@@ -3154,7 +3319,6 @@
 
     window.addEventListener('keydown', e => { 
         if (e.key === ' ') {
-            // Evitar que el espacio pulse botones en el modal
             if(document.getElementById('initials-modal').style.display === 'flex') return;
             e.preventDefault(); 
         }
