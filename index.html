@@ -2844,33 +2844,6 @@
                 }
             });
             if (hitRock) return;
-
-            if (Date.now() - et.spawnTime > 1500) {
-                cargoShipsData.forEach(ship => {
-                    if (!ship.active || ship.state !== 'normal' || !et.active) return;
-                    if (et.x > ship.x - ship.hitboxWidth/2 && et.x < ship.x + ship.hitboxWidth/2 && et.y > ship.y - ship.hitboxHeight/2 - 30 && et.y < ship.y + ship.hitboxHeight/2) {
-                        createExplosion(et.x, et.y, 3.0); et.dispose(); ship.hp--; if (ship.hp <= 0) { ship.startSinking(); gameState.kills.cargo++; }
-                    }
-                });
-                metanerosData.forEach(ship => {
-                    if (!ship.active || ship.state !== 'normal' || !et.active) return;
-                    if (et.x > ship.x - ship.hitboxWidth/2 && et.x < ship.x + ship.hitboxWidth/2 && et.y > ship.y - ship.hitboxHeight/2 - 30 && et.y < ship.y + ship.hitboxHeight/2) {
-                        createExplosion(et.x, et.y, 3.0); et.dispose(); ship.hp--; if (ship.hp <= 0) { ship.startSinking(); gameState.kills.meta++; }
-                    }
-                });
-                destroyersData.forEach(dest => {
-                    if (!dest.active || dest.state !== 'normal' || !et.active) return;
-                    if (et.x > dest.x - dest.hitboxWidth/2 && et.x < dest.x + dest.hitboxWidth/2 && et.y > dest.y - dest.hitboxHeight/2 - 30 && et.y < dest.y + dest.hitboxHeight/2) {
-                        createExplosion(et.x, et.y, 3.0); et.dispose(); dest.hp--; if(dest.hp <= 0) { dest.startSinking(); gameState.kills.dest++; }
-                    }
-                });
-                frigatesData.forEach(frig => {
-                    if (!frig.active || frig.state !== 'normal' || !et.active) return;
-                    if (et.x > frig.x - frig.hitboxWidth/2 && et.x < frig.x + frig.hitboxWidth/2 && et.y > frig.y - frig.hitboxHeight/2 - 30 && et.y < frig.y + frig.hitboxHeight/2) {
-                        createExplosion(et.x, et.y, 3.0); et.dispose(); frig.hp--; if(frig.hp <= 0) { frig.startSinking(); gameState.kills.frig++; }
-                    }
-                });
-            }
         });
 
         fuelsData.forEach(fuel => {
