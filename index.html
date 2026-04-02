@@ -203,6 +203,7 @@
     <div id="bottom-controls" style="display: none;">
         <button id="pause-btn" class="bottom-btn" onclick="togglePause()">⏸️ Pausa</button>
         <button id="mute-btn" class="bottom-btn" onclick="toggleMute()">🔇 Sonido OFF</button>
+        <button id="fullscreen-btn" class="bottom-btn" onclick="toggleFullScreen()">🔲 P. Completa</button>
         <button id="quit-btn" class="bottom-btn" onclick="quitToMainMenu()">🚪 Abandonar</button>
     </div>
     
@@ -296,6 +297,25 @@
         btn.textContent = gameState.isPaused ? '▶️ Reanudar' : '⏸️ Pausa';
         overlay.style.display = gameState.isPaused ? 'block' : 'none';
     }
+    
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Error al iniciar pantalla completa: ${err.message}`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+        const btn = document.getElementById('fullscreen-btn');
+        if (btn) {
+            btn.textContent = document.fullscreenElement ? '🔳 Salir P. Completa' : '🔲 P. Completa';
+        }
+    });
 
     function quitToMainMenu() {
         gameState.isRunning = false;
