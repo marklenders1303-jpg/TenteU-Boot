@@ -15,12 +15,26 @@
         .controls-info { font-size: 18px !important; color: #aaa !important; margin-bottom: 30px !important; background: rgba(0,0,0,0.5); padding: 15px 30px; border-radius: 10px; border: 1px solid #333; }
         
         /* SELECTOR DE SUBMARINO */
-        .sub-selector { margin-bottom: 40px; z-index: 201; }
+        .sub-selector { margin-bottom: 20px; z-index: 201; }
         .sub-selector h3 { color: #ccc; margin-bottom: 15px; font-weight: normal; font-size: 20px; }
         .sub-options { display: flex; gap: 20px; justify-content: center; }
         .sub-option { padding: 12px 30px; border: 2px solid #444; border-radius: 8px; cursor: pointer; color: #aaa; font-weight: bold; font-size: 18px; background: rgba(0,0,0,0.6); transition: all 0.2s ease; letter-spacing: 1px; }
         .sub-option:hover { border-color: #00ffcc; color: #fff; background: rgba(0, 255, 204, 0.1); transform: translateY(-2px); }
         .sub-option.selected { border-color: #00ffcc; background: rgba(0, 255, 204, 0.2); color: #00ffcc; box-shadow: 0 0 15px rgba(0,255,204,0.4); transform: scale(1.05); }
+
+        /* RANKING / HIGH SCORES */
+        #high-scores-container { margin-bottom: 30px; background: rgba(0, 0, 0, 0.7); border: 2px solid #00ffcc; border-radius: 12px; padding: 15px 35px; box-shadow: 0 0 15px rgba(0,255,204,0.2); z-index: 201; min-height: 100px; display: flex; flex-direction: column; align-items: center;}
+        #high-scores-container h3 { color: #ffcc00; margin: 0 0 10px 0; font-size: 22px; letter-spacing: 2px; border-bottom: 1px solid #444; padding-bottom: 8px; width: 100%; text-align: center;}
+        .score-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 18px; font-family: 'Courier New', Courier, monospace; font-weight: bold; width: 220px; }
+        .score-row .rank-name { color: #00ffcc; }
+        .score-row .score-val { color: #fff; }
+
+        /* MODAL DE INICIALES */
+        #initials-modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 300; flex-direction: column; justify-content: center; align-items: center; text-align: center; pointer-events: auto; }
+        #initials-modal h2 { color: #ffcc00; font-size: 60px; margin-bottom: 10px; text-shadow: 0 0 25px rgba(255,204,0,0.6); letter-spacing: 3px; }
+        #initials-modal p { font-size: 26px; color: #fff; margin-bottom: 30px; }
+        #initials-input { font-size: 40px; text-transform: uppercase; width: 150px; text-align: center; background: #111; color: #00ffcc; border: 3px solid #00ffcc; border-radius: 10px; padding: 10px; outline: none; margin-bottom: 30px; letter-spacing: 10px; font-family: 'Courier New', monospace; }
+        #initials-input:focus { box-shadow: 0 0 20px rgba(0,255,204,0.5); }
 
         #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; justify-content: space-between; padding: 25px 40px; box-sizing: border-box; background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 20%); z-index: 5; }
         .ui-section { display: flex; flex-direction: column; gap: 8px; }
@@ -73,7 +87,6 @@
         @keyframes pulse-warning { 0% { opacity: 0.4; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
         @keyframes blink-warning { 0% { opacity: 0.2; } 100% { opacity: 1; } }
 
-        /* CARTEL DE ANUNCIO DE NIVEL */
         #level-announcer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: #00ffcc; text-shadow: 0px 0px 40px rgba(0, 255, 204, 0.8); letter-spacing: 15px; pointer-events: none; z-index: 150; opacity: 0; display: none; transition: opacity 1s ease-in-out; }
 
         #pause-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: rgba(180, 180, 180, 0.7); letter-spacing: 25px; pointer-events: none; z-index: 100; display: none; text-shadow: 0px 0px 20px rgba(0,0,0,0.8); }
@@ -89,6 +102,9 @@
         button:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 10px 30px rgba(0, 255, 204, 0.6); }
         button:active { transform: scale(0.98); }
         
+        #save-score-btn { background: linear-gradient(to bottom, #ffcc00, #ff9900); color: #000; box-shadow: 0 6px 25px rgba(255, 204, 0, 0.4); padding: 15px 50px; }
+        #save-score-btn:hover { box-shadow: 0 10px 30px rgba(255, 204, 0, 0.6); }
+
         #retry-btn { background: linear-gradient(to bottom, #ffcc00, #ff9900); color: #000; box-shadow: 0 6px 25px rgba(255, 204, 0, 0.4); }
         #retry-btn:hover { box-shadow: 0 10px 30px rgba(255, 204, 0, 0.6); }
         
@@ -119,6 +135,12 @@
             [Espacio] - Disparar Torpedo
         </div>
 
+        <div id="high-scores-container">
+            <h3>TOP 5 FLOTA</h3>
+            <div id="high-scores-list">
+                </div>
+        </div>
+
         <div class="sub-selector">
             <h3>Selecciona tu Submarino:</h3>
             <div class="sub-options">
@@ -129,6 +151,13 @@
         </div>
 
         <button id="start-btn" onclick="startGame()">Comenzar Misión</button>
+    </div>
+
+    <div id="initials-modal">
+        <h2>¡NUEVO RÉCORD!</h2>
+        <p>Has entrado en el TOP 5 con: <span id="new-record-score" style="color:#00ffcc; font-weight:bold;">0</span> pts</p>
+        <input type="text" id="initials-input" maxlength="3" placeholder="AAA" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '').toUpperCase()">
+        <button id="save-score-btn" onclick="saveHighScore()">Guardar y Continuar</button>
     </div>
 
     <div id="ui-layer" style="display: none;">
@@ -172,14 +201,6 @@
     <div id="autopilot-notification">¡BASE DETECTADA!<br>AUTOPILOTO ACTIVADO</div>
     <div id="objective-warning">¡ADVERTENCIA!<br>DESTRUYE MÁS ENEMIGOS PARA DESBLOQUEAR LA BASE</div>
 
-    <div id="bottom-controls" style="display: none;">
-        <button id="pause-btn" class="bottom-btn" onclick="togglePause()">⏸️ Pausa</button>
-        <button id="mute-btn" class="bottom-btn" onclick="toggleMute()">🔇 Sonido OFF</button>
-        <button id="quit-btn" class="bottom-btn" onclick="quitToMainMenu()">🚪 Abandonar</button>
-    </div>
-    
-    <canvas id="radar-canvas" width="200" height="112" style="display: none;"></canvas>
-
     <div id="game-over-screen">
         <h1 id="end-title">¡FIN DEL JUEGO!</h1>
         <p>Tu puntuación final: <span id="final-score">0</span></p>
@@ -189,6 +210,15 @@
             <button id="restart-full-btn" onclick="resetGame()" style="display: none;">Volver a Jugar</button>
         </div>
     </div>
+
+    <div id="bottom-controls" style="display: none;">
+        <button id="pause-btn" class="bottom-btn" onclick="togglePause()">⏸️ Pausa</button>
+        <button id="mute-btn" class="bottom-btn" onclick="toggleMute()">🔇 Sonido OFF</button>
+        <button id="quit-btn" class="bottom-btn" onclick="quitToMainMenu()">🚪 Abandonar</button>
+    </div>
+    
+    <canvas id="radar-canvas" width="200" height="112" style="display: none;"></canvas>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -196,13 +226,62 @@
 <script>
     let selectedSubmarineImage = 'Uboot.png';
 
-    // Variables para guardar el estado al inicio de cada nivel
     let savedScore = 0;
     let savedTorpedoes = 10;
     
-    // Variables para el Sonar
     let lastSonarTime = 0;
     const SONAR_INTERVAL = 3000;
+
+    // --- SISTEMA DE PUNTUACIONES LOCALES (RANKING VIRGEN) ---
+    // Inicializado como un array vacío para que no haya puntuaciones ficticias
+    let highScores = JSON.parse(localStorage.getItem('tenteUBootHighScores')) || [];
+
+    function renderHighScores() {
+        const list = document.getElementById('high-scores-list');
+        list.innerHTML = '';
+        
+        if (highScores.length === 0) {
+            const emptyMsg = document.createElement('div');
+            emptyMsg.style.textAlign = 'center';
+            emptyMsg.style.color = '#888';
+            emptyMsg.style.fontStyle = 'italic';
+            emptyMsg.style.margin = '10px 0';
+            emptyMsg.textContent = 'Aún no hay récords. ¡Sé el primero!';
+            list.appendChild(emptyMsg);
+        } else {
+            highScores.forEach((entry, index) => {
+                const row = document.createElement('div');
+                row.className = 'score-row';
+                row.innerHTML = `<span class="rank-name">${index + 1}. ${entry.name}</span><span class="score-val">${String(entry.score).padStart(6, '0')}</span>`;
+                list.appendChild(row);
+            });
+        }
+    }
+
+    function checkHighScore(score) {
+        if (score <= 0) return false; // No permitimos guardar puntuaciones de 0
+        return highScores.length < 5 || score > highScores[highScores.length - 1].score;
+    }
+
+    function saveHighScore() {
+        let name = document.getElementById('initials-input').value.toUpperCase().trim() || 'UNK';
+        if (name.length > 3) name = name.substring(0, 3);
+        
+        highScores.push({ name: name, score: Math.floor(gameState.score) });
+        highScores.sort((a, b) => b.score - a.score);
+        highScores = highScores.slice(0, 5); // Mantener solo top 5
+        localStorage.setItem('tenteUBootHighScores', JSON.stringify(highScores));
+        
+        renderHighScores();
+        
+        // Cerrar modal y mostrar pantalla normal de GameOver
+        document.getElementById('initials-modal').style.display = 'none';
+        document.getElementById('game-over-screen').style.display = 'flex';
+    }
+
+    // Inicializar ranking al cargar script
+    renderHighScores();
+
 
     function selectSubmarine(img, elementId) {
         selectedSubmarineImage = img;
@@ -212,19 +291,17 @@
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // --- NUEVO: Configuración del audio externo del sonar ---
     const sonarAudio = new Audio('sonar.mp3');
-    sonarAudio.volume = 0.06; // Volumen al 6% para que actúe de fondo sutil
+    sonarAudio.volume = 0.06;
 
     let isMuted = true;
     
-    // Actualizada para sincronizar el estado del mute con el archivo mp3
     function toggleMute() {
         isMuted = !isMuted;
         const btn = document.getElementById('mute-btn');
         btn.textContent = isMuted ? '🔇 Sonido OFF' : '🔊 Sonido ON';
         if (!isMuted && audioCtx.state === 'suspended') audioCtx.resume();
-        sonarAudio.muted = isMuted; // Sincroniza el sonido externo con el botón
+        sonarAudio.muted = isMuted; 
     }
 
     function togglePause() {
@@ -248,7 +325,9 @@
         document.getElementById('bottom-controls').style.display = 'none';
         document.getElementById('radar-canvas').style.display = 'none';
         document.getElementById('game-over-screen').style.display = 'none';
+        document.getElementById('initials-modal').style.display = 'none';
         
+        renderHighScores(); // Actualiza por si acaso
         document.getElementById('start-screen').style.display = 'flex';
     }
 
@@ -265,7 +344,6 @@
         startLevel(1);
     }
 
-    // --- SISTEMA DE DIFICULTAD Y NIVELES ---
     const levelConfigs = [
         { kills: 5, length: 10000, cargo: 4, meta: 2, dest: 2, frig: 0, miss: 0, drone: 2, mines: 15, fuels: 6, oxygens: 5, ammos: 10, fish: 20 },
         { kills: 6, length: 11000, cargo: 4, meta: 3, dest: 3, frig: 1, miss: 0, drone: 3, mines: 20, fuels: 6, oxygens: 4, ammos: 9, fish: 20 },
@@ -279,13 +357,10 @@
         { kills: 28, length: 20000, cargo: 9, meta: 7, dest: 11, frig: 10, miss: 5, drone: 11, mines: 130, fuels: 2, oxygens: 1, ammos: 4, fish: 5 } 
     ];
 
-    // --- NUEVO: Función actualizada para disparar el archivo sonar.mp3 ---
     function playSonarPing() {
         if (isMuted) return;
-        sonarAudio.currentTime = 0; // Reinicia el audio por si aún está sonando
-        sonarAudio.play().catch(error => {
-            // Ignoramos silenciosamente si el navegador bloquea la reproducción automática
-        });
+        sonarAudio.currentTime = 0; 
+        sonarAudio.play().catch(error => {});
     }
 
     function playExplosionSound() {
@@ -2511,13 +2586,11 @@
 
         if (!gameState.isPaused) {
             
-            // --- Sonido de Sonar de Fondo ---
             const now = Date.now();
             if (now - lastSonarTime > SONAR_INTERVAL) {
                 lastSonarTime = now;
                 playSonarPing();
             }
-            // --------------------------------
 
             let currentKills = gameState.kills.cargo + gameState.kills.meta + gameState.kills.dest + gameState.kills.frig + gameState.kills.miss;
             
@@ -2965,6 +3038,8 @@
         menuBtn.style.display = 'none';
         restartFullBtn.style.display = 'none';
         
+        let isFinalGameOver = false;
+
         if (won) { 
             gameState.score += 5000 * gameState.level; 
             if (gameState.level < 10) {
@@ -2985,6 +3060,7 @@
                 
                 buttonsContainer.style.display = 'flex';
                 restartFullBtn.style.display = 'inline-block';
+                isFinalGameOver = true;
             }
         } else { 
             endTitle.textContent = "GAME OVER"; 
@@ -2994,13 +3070,27 @@
             buttonsContainer.style.display = 'flex';
             retryBtn.style.display = 'inline-block';
             menuBtn.style.display = 'inline-block';
+            isFinalGameOver = true;
         }
         
         finalScoreDisplay.textContent = Math.floor(gameState.score); 
-        gameOverScreen.style.display = 'flex';
         pressureWarning.style.visibility = 'hidden'; oxygenWarning.style.visibility = 'hidden'; 
         autopilotNotification.style.display = 'none';
         document.getElementById('objective-warning').style.display = 'none';
+
+        // Lógica de High Score cuando termina la partida
+        if (isFinalGameOver) {
+            if (checkHighScore(Math.floor(gameState.score))) {
+                document.getElementById('new-record-score').textContent = Math.floor(gameState.score);
+                document.getElementById('initials-modal').style.display = 'flex';
+                document.getElementById('initials-input').value = '';
+                document.getElementById('initials-input').focus();
+            } else {
+                gameOverScreen.style.display = 'flex';
+            }
+        } else {
+            gameOverScreen.style.display = 'flex';
+        }
     }
 
     function startLevel(levelNum) {
@@ -3024,12 +3114,12 @@
         document.getElementById('pause-btn').textContent = '⏸️ Pausa';
         document.getElementById('pause-overlay').style.display = 'none';
         gameOverScreen.style.display = 'none';
+        document.getElementById('initials-modal').style.display = 'none';
 
-        // Anunciar el nivel
         const announcer = document.getElementById('level-announcer');
         announcer.textContent = "NIVEL " + levelNum;
         announcer.style.display = 'block';
-        void announcer.offsetWidth; // Forzar reflow para que la animación se vea
+        void announcer.offsetWidth; 
         announcer.style.opacity = '1';
 
         setTimeout(() => {
@@ -3044,11 +3134,7 @@
     }
 
     function retryLevel() {
-        // Al morir y reintentar, la puntuación vuelve a 0
         savedScore = 0; 
-        
-        // No modificamos savedTorpedoes, de modo que conservas exactamente 
-        // los que tenías la primera vez que entraste en este mismo nivel.
         startLevel(gameState.level);
     }
 
@@ -3067,7 +3153,11 @@
     }
 
     window.addEventListener('keydown', e => { 
-        if (e.key === ' ') e.preventDefault(); 
+        if (e.key === ' ') {
+            // Evitar que el espacio pulse botones en el modal
+            if(document.getElementById('initials-modal').style.display === 'flex') return;
+            e.preventDefault(); 
+        }
         if (gameState.isAutoPiloting) return; 
         
         if (!keys[e.key]) { 
